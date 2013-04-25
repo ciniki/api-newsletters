@@ -27,7 +27,7 @@ function ciniki_newsletters_web_fileDownload($ciniki, $business_id, $permalink) 
 		return $rc;
 	}
 	if( !isset($rc['file']) ) {
-		return array('stat'=>'noexist', 'err'=>array('pkg'=>'ciniki', 'code'=>'1008', 'msg'=>'Unable to find requested file'));
+		return array('stat'=>'noexist', 'err'=>array('pkg'=>'ciniki', 'code'=>'1110', 'msg'=>'Unable to find requested file'));
 	}
 	$rc['file']['filename'] = $rc['file']['name'] . '.' . $rc['file']['extension'];
 
