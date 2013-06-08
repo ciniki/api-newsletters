@@ -175,7 +175,7 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
 	foreach($changelog_fields as $field) {
 		if( isset($args[$field]) ) {
 			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.newsletters', 
-				'ciniki_newsletters_history', $args['business_id'], 
+				'ciniki_newsletter_history', $args['business_id'], 
 				1, 'ciniki_newsletter_files', $file_id, $field, $args[$field]);
 		}
 	}

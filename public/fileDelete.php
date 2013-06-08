@@ -87,7 +87,7 @@ function ciniki_newsletters_fileDelete(&$ciniki) {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1080', 'msg'=>'Unable to delete art'));
 	}
 
-	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.newsletters', 'ciniki_newsletters_history', 
+	$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.newsletters', 'ciniki_newsletter_history', 
 		$args['business_id'], 3, 'ciniki_newsletter_files', $args['file_id'], '*', '');
 
 	//

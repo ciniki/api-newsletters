@@ -97,7 +97,7 @@ function ciniki_newsletters_fileUpdate(&$ciniki) {
 		if( isset($args[$field]) ) {
 			$strsql .= ", $field = '" . ciniki_core_dbQuote($ciniki, $args[$field]) . "' ";
 			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.newsletters', 
-				'ciniki_newsletters_history', $args['business_id'], 
+				'ciniki_newsletter_history', $args['business_id'], 
 				2, 'ciniki_newsletter_files', $args['file_id'], $field, $args[$field]);
 		}
 	}
