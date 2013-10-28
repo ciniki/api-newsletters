@@ -34,6 +34,7 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
 		'type'=>array('required'=>'yes', 'blank'=>'no', 'validlist'=>array('1'), 'name'=>'Type'),
         'name'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Name'), 
         'description'=>array('required'=>'no', 'default'=>'', 'blank'=>'yes', 'name'=>'Description'), 
+        'status'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'1', 'name'=>'Status'), 
         'webflags'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'0', 'name'=>'Web Flags'), 
 		'publish_date'=>array('required'=>'no', 'blank'=>'yes', 'default'=>'', 'type'=>'date', 'name'=>'Publish Date'),
         )); 
@@ -55,21 +56,6 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
         return $rc;
     }   
 	$modules = $rc['modules'];
-
-	//  
-	// Turn off autocommit
-	//  
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionStart');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionRollback');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbTransactionCommit');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQuote');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbInsert');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbAddModuleHistory');
-	$rc = ciniki_core_dbTransactionStart($ciniki, 'ciniki.newsletters');
-	if( $rc['stat'] != 'ok' ) { 
-		return $rc;
-	}   
 
 	//
 	// Check the permalink doesn't already exist
@@ -109,95 +95,14 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
 	//
 	if( $args['extension'] != 'pdf' ) {
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1075', 'msg'=>'The file must be a PDF file.'));
-		
 	}
 
-	//
-	// Get a new UUID
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');
-	$rc = ciniki_core_dbUUID($ciniki, 'ciniki.newsletters');
-	if( $rc['stat'] != 'ok' ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.newsletters');
-		return $rc;
-	}
-	$args['uuid'] = $rc['uuid'];
-
-	$file_contents = file_get_contents($_FILES['uploadfile']['tmp_name']);
+	$args['binary_content'] = file_get_contents($_FILES['uploadfile']['tmp_name']);
 
 	//
 	// Add the file to the database
 	//
-	$strsql = "INSERT INTO ciniki_newsletter_files (uuid, business_id, "
-		. "type, extension, status, name, permalink, webflags, "
-		. "description, org_filename, publish_date, binary_content, "
-		. "date_added, last_updated) VALUES ("
-		. "'" . ciniki_core_dbQuote($ciniki, $args['uuid']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['type']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['extension']) . "', "
-		. "'1', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['name']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['permalink']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['webflags']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['description']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['org_filename']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $args['publish_date']) . "', "
-		. "'" . ciniki_core_dbQuote($ciniki, $file_contents) . "', "
-		. "UTC_TIMESTAMP(), UTC_TIMESTAMP())"
-		. "";
-	$rc = ciniki_core_dbInsert($ciniki, $strsql, 'ciniki.newsletters');
-	if( $rc['stat'] != 'ok' ) { 
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.newsletters');
-		return $rc;
-	}
-	if( !isset($rc['insert_id']) || $rc['insert_id'] < 1 ) {
-		ciniki_core_dbTransactionRollback($ciniki, 'ciniki.newsletters');
-		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1076', 'msg'=>'Unable to add file'));
-	}
-	$file_id = $rc['insert_id'];
-
-	//
-	// Add all the fields to the change log
-	//
-	$changelog_fields = array(
-		'uuid',
-		'type',
-		'extension',
-		'status',
-		'name',
-		'permalink',
-		'webflags',
-		'description',
-		'org_filename',
-		'publish_date',
-		);
-	foreach($changelog_fields as $field) {
-		if( isset($args[$field]) ) {
-			$rc = ciniki_core_dbAddModuleHistory($ciniki, 'ciniki.newsletters', 
-				'ciniki_newsletter_history', $args['business_id'], 
-				1, 'ciniki_newsletter_files', $file_id, $field, $args[$field]);
-		}
-	}
-
-	//
-	// Commit the database changes
-	//
-    $rc = ciniki_core_dbTransactionCommit($ciniki, 'ciniki.newsletters');
-	if( $rc['stat'] != 'ok' ) {
-		return $rc;
-	}
-
-	//
-	// Update the last_change date in the business modules
-	// Ignore the result, as we don't want to stop user updates if this fails.
-	//
-	ciniki_core_loadMethod($ciniki, 'ciniki', 'businesses', 'private', 'updateModuleChangeDate');
-	ciniki_businesses_updateModuleChangeDate($ciniki, $args['business_id'], 'ciniki', 'newsletters');
-
-	$ciniki['syncqueue'][] = array('push'=>'ciniki.newsletters.file', 
-		'args'=>array('id'=>$file_id));
-
-	return array('stat'=>'ok', 'id'=>$file_id);
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectAdd');
+	return ciniki_core_objectAdd($ciniki, $args['business_id'], 'ciniki.newsletters.file', $args, 0x07);
 }
 ?>
