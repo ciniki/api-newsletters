@@ -1,0 +1,5 @@
+#
+# Add the checksum to the database for newsletter files
+#
+ALTER TABLE ciniki_newsletter_files ADD COLUMN checksum int unsigned not null AFTER publish_date;
+ALTER TABLE ciniki_newsletter_files COMMENT='v1.02';

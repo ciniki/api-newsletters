@@ -24,6 +24,7 @@ function ciniki_newsletters_objects($ciniki) {
 			'description'=>array(),
 			'org_filename'=>array(),
 			'publish_date'=>array(),
+			'checksum'=>array(),
 			'binary_content'=>array('history'=>'no'),
 			),
 		'history_table'=>'ciniki_newsletter_history',

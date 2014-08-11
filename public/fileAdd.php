@@ -43,8 +43,10 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
     }   
     $args = $rc['args'];
 
-	$name = $args['name'];
-	$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($name)));
+//	$name = $args['name'];
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'makePermalink');
+	$args['permalink'] = ciniki_core_makePermalink($ciniki, $args['name']);
+//	$args['permalink'] = preg_replace('/ /', '-', preg_replace('/[^a-z0-9 ]/', '', strtolower($name)));
 
     //  
     // Make sure this module is activated, and
@@ -73,7 +75,7 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
 	}
 
     //
-    // Check to see if an image was uploaded
+    // Check to see if an pdf was uploaded
     //
     if( isset($_FILES['uploadfile']['error']) && $_FILES['uploadfile']['error'] == UPLOAD_ERR_INI_SIZE ) {
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1069', 'msg'=>'Upload failed, file too large.'));
@@ -97,7 +99,23 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
         return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1075', 'msg'=>'The file must be a PDF file.'));
 	}
 
-	$args['binary_content'] = file_get_contents($_FILES['uploadfile']['tmp_name']);
+	//
+	// Get the checksum for the file
+	//
+	$file = file_get_contents($_FILES['uploadfile']['tmp_name']);
+	$args['checksum'] = crc32($file);
+
+	//
+	// Move the file into storage
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'storageFileAdd');
+	$rc = ciniki_core_storageFileAdd($ciniki, $args['business_id'], 'ciniki.newsletters.file', array(
+		'filename'=>$_FILES['uploadfile']['name']));
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+	$args['uuid'] = $rc['uuid'];
+	$args['binary_content'] = '';
 
 	//
 	// Add the file to the database
