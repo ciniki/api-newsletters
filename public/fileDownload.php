@@ -79,7 +79,7 @@ function ciniki_newsletters_fileDownload($ciniki) {
 	header('Content-Length: ' . strlen($file['binary_content']));
 	header('Cache-Control: max-age=0');
 
-	if( $file['binary_content'] == '' ) {
+//	if( $file['binary_content'] == '' ) {
 		$storage_filename = $ciniki['config']['ciniki.core']['storage_dir'] . '/'
 			. $file['business_uuid'][0] . '/' . $file['business_uuid']
 			. '/ciniki.newsletters/'
@@ -88,7 +88,7 @@ function ciniki_newsletters_fileDownload($ciniki) {
 			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1914', 'msg'=>'File does not exist.'));
 		}
 		$file['binary_content'] = file_get_contents($storage_filename);
-	}
+//	}
 
 	print $file['binary_content'];
 	exit();

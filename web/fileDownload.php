@@ -39,7 +39,7 @@ function ciniki_newsletters_web_fileDownload($ciniki, $business_id, $permalink) 
 	//
 	// If binary_content is empty, then load from filesystem
 	//
-	if( $file['binary_content'] == '' ) {
+//	if( $file['binary_content'] == '' ) {
 		$storage_filename = $ciniki['config']['ciniki.core']['storage_dir'] . '/'
 			. $file['business_uuid'][0] . '/' . $file['business_uuid']
 			. '/ciniki.newsletters/'
@@ -48,7 +48,7 @@ function ciniki_newsletters_web_fileDownload($ciniki, $business_id, $permalink) 
 			return array('stat'=>'404', 'err'=>array('pkg'=>'ciniki', 'code'=>'1910', 'msg'=>"I'm sorry but the file you requests does not exist."));
 		}
 		$file['binary_content'] = file_get_contents($storage_filename);
-	}
+//	}
 
 	return array('stat'=>'ok', 'file'=>$file);
 }
