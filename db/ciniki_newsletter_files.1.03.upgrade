@@ -1,0 +1,5 @@
+#
+# Add the checksum to the database for newsletter files
+#
+ALTER TABLE ciniki_newsletter_files DROP COLUMN binary_content;
+ALTER TABLE ciniki_newsletter_files COMMENT='v1.03';

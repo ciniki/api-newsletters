@@ -45,8 +45,7 @@ function ciniki_newsletters_fileDownload($ciniki) {
 	$strsql = "SELECT ciniki_newsletter_files.id, "
 		. "ciniki_businesses.uuid AS business_uuid, "
 		. "ciniki_newsletter_files.uuid, "
-		. "ciniki_newsletter_files.name, ciniki_newsletter_files.extension, "
-		. "ciniki_newsletter_files.binary_content "
+		. "ciniki_newsletter_files.name, ciniki_newsletter_files.extension "
 		. "FROM ciniki_newsletter_files, ciniki_businesses "
 		. "WHERE ciniki_newsletter_files.id = '" . ciniki_core_dbQuote($ciniki, $args['file_id']) . "' "
 		. "AND ciniki_newsletter_files.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
@@ -74,21 +73,20 @@ function ciniki_newsletters_fileDownload($ciniki) {
 	} else {
 		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1079', 'msg'=>'Unsupported file type'));
 	}
+
+	$storage_filename = $ciniki['config']['ciniki.core']['storage_dir'] . '/'
+		. $file['business_uuid'][0] . '/' . $file['business_uuid']
+		. '/ciniki.newsletters/'
+		. $file['uuid'][0] . '/' . $file['uuid'];
+	if( !file_exists($storage_filename) ) {
+		return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1914', 'msg'=>'File does not exist.'));
+	}
+	$file['binary_content'] = file_get_contents($storage_filename);
+
 	// Specify Filename
 	header('Content-Disposition: attachment;filename="' . $filename . '"');
 	header('Content-Length: ' . strlen($file['binary_content']));
 	header('Cache-Control: max-age=0');
-
-//	if( $file['binary_content'] == '' ) {
-		$storage_filename = $ciniki['config']['ciniki.core']['storage_dir'] . '/'
-			. $file['business_uuid'][0] . '/' . $file['business_uuid']
-			. '/ciniki.newsletters/'
-			. $file['uuid'][0] . '/' . $file['uuid'];
-		if( !file_exists($storage_filename) ) {
-			return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1914', 'msg'=>'File does not exist.'));
-		}
-		$file['binary_content'] = file_get_contents($storage_filename);
-//	}
 
 	print $file['binary_content'];
 	exit();

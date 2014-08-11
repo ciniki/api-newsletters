@@ -36,8 +36,6 @@
 #
 # checksum:			The crc32 checksum for the file, to keep track of duplicates.
 #
-# binary_content:	The contents of the uploaded file.
-#
 # date_added:		The UTC date and time the file was added.
 # last_updated:		The UTC date and time the file was last updated.
 #
@@ -55,11 +53,10 @@ create table ciniki_newsletter_files (
 	org_filename varchar(250) not null,
 	publish_date date not null,
 	checksum int unsigned not null,
-	binary_content longblob,
 	date_added datetime not null,
 	last_updated datetime not null,
 	primary key (id),
 	unique index (business_id, permalink), 
 	index (name),
 	index uuid (uuid, last_updated)
-) ENGINE='InnoDB', COMMENT='v1.02';
+) ENGINE='InnoDB', COMMENT='v1.03';

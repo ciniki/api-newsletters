@@ -115,7 +115,6 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
 		return $rc;
 	}
 	$args['uuid'] = $rc['uuid'];
-	$args['binary_content'] = '';
 
 	//
 	// Add the file to the database
