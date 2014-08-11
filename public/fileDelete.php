@@ -56,6 +56,16 @@ function ciniki_newsletters_fileDelete(&$ciniki) {
 	$uuid = $rc['file']['uuid'];
 
 	//
+	// Remove the file from storage
+	//
+	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'storageFileDelete');
+	$rc = ciniki_core_storageFileDelete($ciniki, $args['business_id'], 'ciniki.newsletters.file', array(
+		'uuid'=>$uuid));
+	if( $rc['stat'] != 'ok' ) {
+		return $rc;
+	}
+
+	//
 	// Delete the file
 	//
 	ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
