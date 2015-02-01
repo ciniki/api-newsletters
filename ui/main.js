@@ -224,6 +224,6 @@ function ciniki_newsletters_main() {
 	};
 
 	this.downloadFile = function(fid) {
-		window.open(M.api.getUploadURL('ciniki.newsletters.fileDownload', {'business_id':M.curBusinessID, 'file_id':fid}));
+		M.api.openFile('ciniki.newsletters.fileDownload', {'business_id':M.curBusinessID, 'file_id':fid});
 	};
 }
