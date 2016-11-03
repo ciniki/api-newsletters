@@ -16,7 +16,7 @@ function ciniki_newsletters_movetoStorage(&$ciniki) {
     // Sysadmins are allowed full access
     //
     if( ($ciniki['session']['user']['perms'] & 0x01) != 0x01 ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1900', 'msg'=>'Permission Denied'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.13', 'msg'=>'Permission Denied'));
     }
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectUpdate');
@@ -48,13 +48,13 @@ function ciniki_newsletters_movetoStorage(&$ciniki) {
             $storage_filename = $storage_dirname . '/' . $file['uuid'];
             if( !is_dir($storage_dirname) ) {
                 if( !mkdir($storage_dirname, 0700, true) ) {
-                    return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1499', 'msg'=>'Unable to add file'));
+                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.14', 'msg'=>'Unable to add file'));
                 }
             }
             if( file_exists($storage_filename) ) {
                 error_log('FILE[' . $file['id'] . ']: file already exists');
             } elseif( file_put_contents($storage_filename, $file['binary_content']) === FALSE ) {
-                return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1496', 'msg'=>'Unable to add file'));
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.15', 'msg'=>'Unable to add file'));
             }
             $rc = ciniki_core_objectUpdate($ciniki, $file['business_id'], 'ciniki.newsletters.file',
                 $file['id'], $args, 0x07);

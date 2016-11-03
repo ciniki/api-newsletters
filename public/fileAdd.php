@@ -71,14 +71,14 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
         return $rc;
     }
     if( $rc['num_rows'] > 0 ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1071', 'msg'=>'You already have a file with this name, please choose another name'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.3', 'msg'=>'You already have a file with this name, please choose another name'));
     }
 
     //
     // Check to see if an pdf was uploaded
     //
     if( isset($_FILES['uploadfile']['error']) && $_FILES['uploadfile']['error'] == UPLOAD_ERR_INI_SIZE ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1069', 'msg'=>'Upload failed, file too large.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.4', 'msg'=>'Upload failed, file too large.'));
     }
     // FIXME: Add other checkes for $_FILES['uploadfile']['error']
 
@@ -86,7 +86,7 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
     // Make sure a file was submitted
     //
     if( !isset($_FILES) || !isset($_FILES['uploadfile']) || $_FILES['uploadfile']['tmp_name'] == '' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1074', 'msg'=>'No file specified.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.5', 'msg'=>'No file specified.'));
     }
 
     $args['org_filename'] = $_FILES['uploadfile']['name'];
@@ -96,7 +96,7 @@ function ciniki_newsletters_fileAdd(&$ciniki) {
     // Check the extension is a PDF, currently only accept PDF files
     //
     if( $args['extension'] != 'pdf' ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1075', 'msg'=>'The file must be a PDF file.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.6', 'msg'=>'The file must be a PDF file.'));
     }
 
     //

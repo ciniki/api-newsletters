@@ -30,7 +30,7 @@ function ciniki_newsletters_web_fileDownload($ciniki, $business_id, $permalink) 
         return $rc;
     }
     if( !isset($rc['file']) ) {
-        return array('stat'=>'noexist', 'err'=>array('pkg'=>'ciniki', 'code'=>'1110', 'msg'=>'Unable to find requested file'));
+        return array('stat'=>'noexist', 'err'=>array('code'=>'ciniki.newsletters.16', 'msg'=>'Unable to find requested file'));
     }
     $file = $rc['file'];
     $file['filename'] = $file['name'] . '.' . $file['extension'];
@@ -43,7 +43,7 @@ function ciniki_newsletters_web_fileDownload($ciniki, $business_id, $permalink) 
         . '/ciniki.newsletters/'
         . $file['uuid'][0] . '/' . $file['uuid'];
     if( !file_exists($storage_filename) ) {
-        return array('stat'=>'404', 'err'=>array('pkg'=>'ciniki', 'code'=>'1910', 'msg'=>"I'm sorry but the file you requests does not exist."));
+        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.newsletters.17', 'msg'=>"I'm sorry but the file you requests does not exist."));
     }
 
     $file['binary_content'] = file_get_contents($storage_filename);

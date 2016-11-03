@@ -61,7 +61,7 @@ function ciniki_newsletters_fileUpdate(&$ciniki) {
             return $rc;
         }
         if( $rc['num_rows'] > 0 ) {
-            return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1082', 'msg'=>'You already have an newsletters with this name, please choose another name.'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.12', 'msg'=>'You already have an newsletters with this name, please choose another name.'));
         }
     }
 

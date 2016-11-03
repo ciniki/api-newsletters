@@ -58,7 +58,7 @@ function ciniki_newsletters_fileDownload($ciniki) {
         return $rc;
     }
     if( !isset($rc['file']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1078', 'msg'=>'Unable to find file'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.8', 'msg'=>'Unable to find file'));
     }
     $file = $rc['file'];
     $filename = $file['name'] . '.' . $file['extension'];
@@ -71,7 +71,7 @@ function ciniki_newsletters_fileDownload($ciniki) {
     if( $file['extension'] == 'pdf' ) {
         header('Content-Type: application/pdf');
     } else {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1079', 'msg'=>'Unsupported file type'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.9', 'msg'=>'Unsupported file type'));
     }
 
     $storage_filename = $ciniki['config']['ciniki.core']['storage_dir'] . '/'
@@ -79,7 +79,7 @@ function ciniki_newsletters_fileDownload($ciniki) {
         . '/ciniki.newsletters/'
         . $file['uuid'][0] . '/' . $file['uuid'];
     if( !file_exists($storage_filename) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1914', 'msg'=>'File does not exist.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.10', 'msg'=>'File does not exist.'));
     }
     $file['binary_content'] = file_get_contents($storage_filename);
 

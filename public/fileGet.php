@@ -65,7 +65,7 @@ function ciniki_newsletters_fileGet($ciniki) {
         return $rc;
     }
     if( !isset($rc['file']) ) {
-        return array('stat'=>'fail', 'err'=>array('pkg'=>'ciniki', 'code'=>'1081', 'msg'=>'Unable to find file'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.newsletters.11', 'msg'=>'Unable to find file'));
     }
     
     return array('stat'=>'ok', 'file'=>$rc['file']);
