@@ -29,7 +29,7 @@ function ciniki_newsletters_main() {
     };
     this.menu.open = function(cb, listby, category) {
         this.data = {};
-        M.api.getJSONCb('ciniki.newsletters.fileList', {'business_id':M.curBusinessID, 'type':'1'}, function(rsp) {
+        M.api.getJSONCb('ciniki.newsletters.fileList', {'tnid':M.curTenantID, 'type':'1'}, function(rsp) {
             if( rsp.stat != 'ok' ) {
                 M.api.err(rsp);
                 return false;
@@ -107,7 +107,7 @@ function ciniki_newsletters_main() {
         return this.data[s];
     };
     this.edit.fieldHistoryArgs = function(s, i) {
-        return {'method':'ciniki.newsletters.fileHistory', 'args':{'business_id':M.curBusinessID, 'file_id':this.file_id, 'field':i}};
+        return {'method':'ciniki.newsletters.fileHistory', 'args':{'tnid':M.curTenantID, 'file_id':this.file_id, 'field':i}};
     };
     this.edit.addButton('save', 'Save', 'M.ciniki_newsletters_main.saveFile();');
     this.edit.addClose('Cancel');
@@ -155,7 +155,7 @@ function ciniki_newsletters_main() {
         var c = this.add.serializeFormData('yes');
         if( c != null ) {
             var rsp = M.api.postJSONFormData('ciniki.newsletters.fileAdd', 
-                {'business_id':M.curBusinessID, 'type':'1'}, c,
+                {'tnid':M.curTenantID, 'type':'1'}, c,
                 function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
@@ -171,7 +171,7 @@ function ciniki_newsletters_main() {
         if( fid != null ) {
             this.edit.file_id = fid;
         }
-        var rsp = M.api.getJSONCb('ciniki.newsletters.fileGet', {'business_id':M.curBusinessID, 
+        var rsp = M.api.getJSONCb('ciniki.newsletters.fileGet', {'tnid':M.curTenantID, 
             'file_id':this.edit.file_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
@@ -189,7 +189,7 @@ function ciniki_newsletters_main() {
 
         if( c != '' ) {
             var rsp = M.api.postJSONFormData('ciniki.newsletters.fileUpdate', 
-                {'business_id':M.curBusinessID, 'file_id':this.edit.file_id}, c,
+                {'tnid':M.curTenantID, 'file_id':this.edit.file_id}, c,
                     function(rsp) {
                         if( rsp.stat != 'ok' ) {
                             M.api.err(rsp);
@@ -203,7 +203,7 @@ function ciniki_newsletters_main() {
 
     this.deleteFile = function(fid) {
         if( confirm('Are you sure you want to delete \'' + this.edit.data.name + '\'?  All information about it will be removed and unrecoverable.') ) {
-            var rsp = M.api.getJSONCb('ciniki.newsletters.fileDelete', {'business_id':M.curBusinessID, 
+            var rsp = M.api.getJSONCb('ciniki.newsletters.fileDelete', {'tnid':M.curTenantID, 
                 'file_id':M.ciniki_newsletters_main.edit.file_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
@@ -215,6 +215,6 @@ function ciniki_newsletters_main() {
     };
 
     this.downloadFile = function(fid) {
-        M.api.openFile('ciniki.newsletters.fileDownload', {'business_id':M.curBusinessID, 'file_id':fid});
+        M.api.openFile('ciniki.newsletters.fileDownload', {'tnid':M.curTenantID, 'file_id':fid});
     };
 }

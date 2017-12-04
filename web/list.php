@@ -7,12 +7,12 @@
 // Returns
 // -------
 //
-function ciniki_newsletters_web_list($ciniki, $business_id) {
+function ciniki_newsletters_web_list($ciniki, $tnid) {
 
     $strsql = "SELECT id, name, extension, permalink, description, "
         . "DATE_FORMAT(publish_date, '%Y') AS year "
         . "FROM ciniki_newsletter_files "
-        . "WHERE business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "WHERE tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND type = 1 "
         . "AND (webflags&0x01) = 0 "
         . "ORDER BY publish_date DESC, name "

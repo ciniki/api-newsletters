@@ -7,23 +7,23 @@
 // Returns
 // -------
 //
-function ciniki_newsletters_web_fileDownload($ciniki, $business_id, $permalink) {
+function ciniki_newsletters_web_fileDownload($ciniki, $tnid, $permalink) {
 
     //
     // Get the file details
     //
     $strsql = "SELECT ciniki_newsletter_files.id, "
-        . "ciniki_businesses.uuid AS business_uuid, "
+        . "ciniki_tenants.uuid AS tenant_uuid, "
         . "ciniki_newsletter_files.uuid, "
         . "ciniki_newsletter_files.name, "
         . "ciniki_newsletter_files.extension "
-        . "FROM ciniki_newsletter_files, ciniki_businesses "
-        . "WHERE ciniki_newsletter_files.business_id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "FROM ciniki_newsletter_files, ciniki_tenants "
+        . "WHERE ciniki_newsletter_files.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND ciniki_newsletter_files.type = 1 "
         . "AND CONCAT_WS('.', ciniki_newsletter_files.permalink, ciniki_newsletter_files.extension) = '" . ciniki_core_dbQuote($ciniki, $permalink) . "' "
         . "AND (ciniki_newsletter_files.webflags&0x01) = 0 "        // Make sure file is to be visible
-        . "AND ciniki_newsletter_files.business_id = ciniki_businesses.id "
-        . "AND ciniki_businesses.id = '" . ciniki_core_dbQuote($ciniki, $business_id) . "' "
+        . "AND ciniki_newsletter_files.tnid = ciniki_tenants.id "
+        . "AND ciniki_tenants.id = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "";
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.newsletters', 'file');
     if( $rc['stat'] != 'ok' ) {
@@ -39,7 +39,7 @@ function ciniki_newsletters_web_fileDownload($ciniki, $business_id, $permalink) 
     // load from ciniki-storage
     //
     $storage_filename = $ciniki['config']['ciniki.core']['storage_dir'] . '/'
-        . $file['business_uuid'][0] . '/' . $file['business_uuid']
+        . $file['tenant_uuid'][0] . '/' . $file['tenant_uuid']
         . '/ciniki.newsletters/'
         . $file['uuid'][0] . '/' . $file['uuid'];
     if( !file_exists($storage_filename) ) {

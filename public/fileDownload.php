@@ -8,7 +8,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business the requested file belongs to.
+// tnid:     The ID of the tenant the requested file belongs to.
 // file_id:         The ID of the file to be downloaded.
 //
 // Returns
@@ -21,7 +21,7 @@ function ciniki_newsletters_fileDownload($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'file_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'File'), 
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -31,10 +31,10 @@ function ciniki_newsletters_fileDownload($ciniki) {
     
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'newsletters', 'private', 'checkAccess');
-    $rc = ciniki_newsletters_checkAccess($ciniki, $args['business_id'], 'ciniki.newsletters.fileDownload'); 
+    $rc = ciniki_newsletters_checkAccess($ciniki, $args['tnid'], 'ciniki.newsletters.fileDownload'); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -43,14 +43,14 @@ function ciniki_newsletters_fileDownload($ciniki) {
     // Get the uuid for the file
     //
     $strsql = "SELECT ciniki_newsletter_files.id, "
-        . "ciniki_businesses.uuid AS business_uuid, "
+        . "ciniki_tenants.uuid AS tenant_uuid, "
         . "ciniki_newsletter_files.uuid, "
         . "ciniki_newsletter_files.name, ciniki_newsletter_files.extension "
-        . "FROM ciniki_newsletter_files, ciniki_businesses "
+        . "FROM ciniki_newsletter_files, ciniki_tenants "
         . "WHERE ciniki_newsletter_files.id = '" . ciniki_core_dbQuote($ciniki, $args['file_id']) . "' "
-        . "AND ciniki_newsletter_files.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
-        . "AND ciniki_newsletter_files.business_id = ciniki_businesses.id "
-        . "AND ciniki_businesses.id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "AND ciniki_newsletter_files.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . "AND ciniki_newsletter_files.tnid = ciniki_tenants.id "
+        . "AND ciniki_tenants.id = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.newsletters', 'file');
@@ -75,7 +75,7 @@ function ciniki_newsletters_fileDownload($ciniki) {
     }
 
     $storage_filename = $ciniki['config']['ciniki.core']['storage_dir'] . '/'
-        . $file['business_uuid'][0] . '/' . $file['business_uuid']
+        . $file['tenant_uuid'][0] . '/' . $file['tenant_uuid']
         . '/ciniki.newsletters/'
         . $file['uuid'][0] . '/' . $file['uuid'];
     if( !file_exists($storage_filename) ) {

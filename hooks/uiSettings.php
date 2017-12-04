@@ -7,12 +7,12 @@
 // Arguments
 // ---------
 // ciniki:
-// business_id:     The ID of the business to get newsletters for.
+// tnid:     The ID of the tenant to get newsletters for.
 //
 // Returns
 // -------
 //
-function ciniki_newsletters_hooks_uiSettings($ciniki, $business_id, $args) {
+function ciniki_newsletters_hooks_uiSettings($ciniki, $tnid, $args) {
 
     //
     // Setup the default response
@@ -22,7 +22,7 @@ function ciniki_newsletters_hooks_uiSettings($ciniki, $business_id, $args) {
     //
     // Check permissions for what menu items should be available
     //
-    if( isset($ciniki['business']['modules']['ciniki.newsletters'])
+    if( isset($ciniki['tenant']['modules']['ciniki.newsletters'])
         && (isset($args['permissions']['owners'])
             || isset($args['permissions']['employees'])
             || isset($args['permissions']['resellers'])

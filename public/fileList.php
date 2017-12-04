@@ -7,7 +7,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:     The ID of the business to get events for.
+// tnid:     The ID of the tenant to get events for.
 // type:            The type of participants to get.  Refer to participantAdd for 
 //                  more information on types.
 //
@@ -20,7 +20,7 @@ function ciniki_newsletters_fileList($ciniki) {
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'type'=>array('required'=>'no', 'blank'=>'no', 'validlist'=>array('1'), 'name'=>'Type'), 
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -29,10 +29,10 @@ function ciniki_newsletters_fileList($ciniki) {
     $args = $rc['args'];
     
     //  
-    // Check access to business_id as owner, or sys admin. 
+    // Check access to tnid as owner, or sys admin. 
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'newsletters', 'private', 'checkAccess');
-    $rc = ciniki_newsletters_checkAccess($ciniki, $args['business_id'], 'ciniki.newsletters.fileList');
+    $rc = ciniki_newsletters_checkAccess($ciniki, $args['tnid'], 'ciniki.newsletters.fileList');
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -50,7 +50,7 @@ function ciniki_newsletters_fileList($ciniki) {
         . "ciniki_newsletter_files.description, "
         . "ciniki_newsletter_files.permalink "
         . "FROM ciniki_newsletter_files "
-        . "WHERE ciniki_newsletter_files.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' ";
+        . "WHERE ciniki_newsletter_files.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' ";
     if( isset($args['type']) && $args['type'] != '' ) {
         $strsql .= "AND type = '" . ciniki_core_dbQuote($ciniki, $args['type']) . "' ";
     }

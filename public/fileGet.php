@@ -7,7 +7,7 @@
 // ---------
 // api_key:
 // auth_token:
-// business_id:         The ID of the business to file belongs to.
+// tnid:         The ID of the tenant to file belongs to.
 // file_id:             The ID of the file to get.
 //
 // Returns
@@ -19,7 +19,7 @@ function ciniki_newsletters_fileGet($ciniki) {
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
-        'business_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Business'), 
+        'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'), 
         'file_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'File'),
         )); 
     if( $rc['stat'] != 'ok' ) { 
@@ -29,10 +29,10 @@ function ciniki_newsletters_fileGet($ciniki) {
 
     //  
     // Make sure this module is activated, and
-    // check permission to run this function for this business
+    // check permission to run this function for this tenant
     //  
     ciniki_core_loadMethod($ciniki, 'ciniki', 'newsletters', 'private', 'checkAccess');
-    $rc = ciniki_newsletters_checkAccess($ciniki, $args['business_id'], 'ciniki.newsletters.fileGet', 0); 
+    $rc = ciniki_newsletters_checkAccess($ciniki, $args['tnid'], 'ciniki.newsletters.fileGet', 0); 
     if( $rc['stat'] != 'ok' ) { 
         return $rc;
     }   
@@ -53,7 +53,7 @@ function ciniki_newsletters_fileGet($ciniki) {
         . "IFNULL(DATE_FORMAT(publish_date, '" . ciniki_core_dbQuote($ciniki, $date_format) . "'), '') AS publish_date, "
         . "ciniki_newsletter_files.description "
         . "FROM ciniki_newsletter_files "
-        . "WHERE ciniki_newsletter_files.business_id = '" . ciniki_core_dbQuote($ciniki, $args['business_id']) . "' "
+        . "WHERE ciniki_newsletter_files.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND ciniki_newsletter_files.id = '" . ciniki_core_dbQuote($ciniki, $args['file_id']) . "' "
         . "";
 

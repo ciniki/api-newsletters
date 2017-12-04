@@ -1,7 +1,7 @@
-Ciniki - Small Business Management Platform
+Ciniki - Multitenant Cloud Platform
 ===========================================
 
-The newsletters module stores the newsletters for a business and displays them on the website.
+The newsletters module stores the newsletters for a tenant and displays them on the website.
 
 License
 -------
