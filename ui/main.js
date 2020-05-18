@@ -123,7 +123,7 @@ function ciniki_newsletters_main() {
         //
         var appContainer = M.createContainer(appPrefix, 'ciniki_newsletters_main', 'yes');
         if( appContainer == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         }
 
@@ -143,12 +143,12 @@ function ciniki_newsletters_main() {
     this.addFile = function() {
         var f = this.add.formFieldValue(this.add.sections._file.fields.uploadfile, 'uploadfile');
         if( f == null || f == '' ) {
-            alert("You must specify a file");
+            M.alert("You must specify a file");
             return false;
         }
         var n = this.add.formFieldValue(this.add.sections.info.fields.name, 'name');
         if( n == this.add.data.name ) {
-            alert("You must specify a name");
+            M.alert("You must specify a name");
             return false;
         }
 
@@ -202,7 +202,7 @@ function ciniki_newsletters_main() {
     };
 
     this.deleteFile = function(fid) {
-        if( confirm('Are you sure you want to delete \'' + this.edit.data.name + '\'?  All information about it will be removed and unrecoverable.') ) {
+        M.confirm('Are you sure you want to delete \'' + this.edit.data.name + '\'?  All information about it will be removed and unrecoverable.',null,function() {
             var rsp = M.api.getJSONCb('ciniki.newsletters.fileDelete', {'tnid':M.curTenantID, 
                 'file_id':M.ciniki_newsletters_main.edit.file_id}, function(rsp) {
                     if( rsp.stat != 'ok' ) {
@@ -211,7 +211,7 @@ function ciniki_newsletters_main() {
                     } 
                     M.ciniki_newsletters_main.edit.close();
                 });
-        }
+        });
     };
 
     this.downloadFile = function(fid) {
